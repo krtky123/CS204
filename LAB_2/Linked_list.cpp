@@ -36,6 +36,40 @@ return 0;
 int Del(int x, int y)
 {
 }
+int Search(float d)
+{
+    struct Node* temp = head; 
+    while (temp!= NULL) { 
+        if((temp->x)*(temp->x)+(temp->y)*(temp->y)<=d*d)
+        {
+            cout<<"("<<(temp->x)<<","<<(temp->y)<<")";
+            
+        }
+        temp=temp->next;
+    } 
+    
+    bool Search(int x,int y) 
+{ 
+    struct Node* temp = head; 
+    while (temp!= NULL) { 
+        if((temp->x)==x&&(temp->y)==y)
+        {
+            return true;
+        }
+        temp=temp->next;
+    } 
+    return false;
+}
+    int Length() 
+{ 
+    struct Node* temp = head; 
+    int l=0;
+    while (temp!= NULL) { 
+        l++;
+        temp=temp->next;
+    } 
+    return l;
+    }
 
 
 
