@@ -82,18 +82,18 @@ int Search(float d)
     }
 }
 
-    bool Search(int x,int y)
+    string Search(int x,int y)
  {
     struct Node* temp = head;
     while (temp!= NULL)
         {
         if((temp->x)==x&&(temp->y)==y)
         {
-            return true;
+            return "true";
         }
         temp=temp->next;
         }
-    return false;
+    return "false";
 }
     int Length()
 {
