@@ -40,7 +40,11 @@ int Del(ll int x,ll int y)
 	struct Node* temp2=head;
 	struct Node* temp1=NULL;
 
-
+    if(temp==NULL)
+    {
+        cout<<"List is Empty";
+        return -1;
+    }
 	while(temp!=NULL)
 	{
 		if(temp->x==x && temp->y==y)
@@ -154,6 +158,7 @@ int Search(long double d)
         }
         return 0;
     }
+
 
 
 
