@@ -69,7 +69,7 @@ int Del(int x,int y)
 	cout<<"Node Not Found";
     return 0;
 }
-int Search(float d)
+int Search(long double d)
 {
     struct Node* temp = head;
     while (temp!= NULL) {
@@ -89,11 +89,11 @@ int Search(float d)
         {
         if((temp->x)==x&&(temp->y)==y)
         {
-            return "true";
+            return "True";
         }
         temp=temp->next;
         }
-    return "false";
+    return "False";
 }
     int Length()
 {
@@ -118,7 +118,7 @@ int Search(float d)
             {
             case 1:
                 {
-                    int x,y;
+                    ll int x,y;
                     cin>>x>>y;
                     AddFirst(x,y);
                 }break;
@@ -128,20 +128,20 @@ int Search(float d)
                 }break;
             case 3:
                 {
-                    int x,y;
+                    ll int x,y;
                     cin>>x>>y;
                     Del(x,y);
                 }break;
             case 4:
                 {
-                   float d;
+                   long double d;
                    cin>>d;
                    Search(d);
                    cout<<endl;
                 }break;
             case 5:
                 {
-                    int x,y;
+                    ll int x,y;
                     cin>>x>>y;
                     cout<<Search(x,y)<<endl;
                 }break;
@@ -154,7 +154,6 @@ int Search(float d)
         }
         return 0;
     }
-
 
 
 
