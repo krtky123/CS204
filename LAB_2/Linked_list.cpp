@@ -5,14 +5,14 @@ using namespace std;
 
 struct Node
 {
-    int y;
-    int x;
+    ll int y;
+    ll int x;
     Node *next;
 };
 
 struct Node*head = NULL;
 
-void AddFirst(int x, int y)
+void AddFirst(ll int x, ll int y)
 {
 struct Node *new_node=(struct Node *)malloc(sizeof(struct Node));
 new_node->x=x;
@@ -34,7 +34,7 @@ free(temp);
 return 0;
 }
 
-int Del(int x,int y)
+int Del(ll int x,ll int y)
 {
 	struct Node* temp=head;
 	struct Node* temp2=head;
@@ -82,7 +82,7 @@ int Search(long double d)
     }
 }
 
-    string Search(int x,int y)
+    string Search(ll int x,ll int y)
  {
     struct Node* temp = head;
     while (temp!= NULL)
@@ -98,7 +98,7 @@ int Search(long double d)
     int Length()
 {
     struct Node* temp = head;
-    int count=0;
+    ll int count=0;
     while (temp!= NULL) {
         count++;
         temp=temp->next;
@@ -110,7 +110,7 @@ int Search(long double d)
     {
         ll t;
         cin>>t;
-        for(int i=0; i<t; i++)
+        for(ll int i=0; i<t; i++)
         {
             int a;
             cin>>a;
