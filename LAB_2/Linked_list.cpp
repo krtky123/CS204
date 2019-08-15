@@ -1,12 +1,12 @@
 #include <iostream>
-#include<cstdlib>
+#include <cstdlib>
 #define ll long long
 using namespace std;
 
 struct Node
 {
-    ll int y;
     ll int x;
+    ll int y;
     Node *next;
 };
 
@@ -21,20 +21,20 @@ new_node->next=head;
 head=new_node;
 }
 
-int DelFirst()
+void DelFirst()
 {
 if(head==NULL)
 {
-cout<<"List is Empty";
-return -1;
+cout<<"-1"<<endl;
+return;
 }
 Node*temp=head;
 head=head->next;
 free(temp);
-return 0;
+return ;
 }
 
-int Del(ll int x,ll int y)
+void Del(ll int x,ll int y)
 {
 	struct Node* temp=head;
 	struct Node* temp2=head;
@@ -42,8 +42,7 @@ int Del(ll int x,ll int y)
 
     if(temp==NULL)
     {
-        cout<<"List is Empty";
-        return -1;
+        cout<<"-1"<<endl;
     }
 	while(temp!=NULL)
 	{
@@ -53,7 +52,6 @@ int Del(ll int x,ll int y)
 			{
 				head=head->next;
 				free(temp);
-                return 1;
 			}
 		}
 	temp=temp->next;
@@ -66,24 +64,32 @@ int Del(ll int x,ll int y)
 			temp1=temp2->next;
 			temp2->next=temp2->next->next;
 			free(temp1);
-            return 1;
+            return;
 		}
 	temp2=temp2->next;
 	}
-	cout<<"Node Not Found";
-    return 0;
+	cout<<"-1"<<endl;
+    return;
 }
-int Search(long double d)
+void Search(long double d)
 {
+   ll int count=0;
     struct Node* temp = head;
     while (temp!= NULL) {
         if((temp->x)*(temp->x)+(temp->y)*(temp->y)<=d*d)
         {
-            cout<<"("<<(temp->x)<<","<<(temp->y)<<")";
+           // cout<<"("<<(temp->x)<<","<<(temp->y)<<")";
+           count++;
+           cout<<count;
 
         }
         temp=temp->next;
     }
+    if(count==0)
+    {
+        cout<<"-1"<<endl;
+    }
+
 }
 
     string Search(ll int x,ll int y)
@@ -158,6 +164,7 @@ int Search(long double d)
         }
         return 0;
     }
+
 
 
 
