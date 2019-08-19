@@ -176,10 +176,11 @@ int eval(et* root)
   
     if (root->value=="*")  
         return l_val*r_val;  
-	
+    if(root->value=="^"){
+    	return pow(l_val,r_val);
+    }
   
-    if (root->value=="/")return l_val/r_val;  
-    return pow(l_val,r_val);
+    return l_val/r_val;  
 }  
 
 int main()
