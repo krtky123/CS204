@@ -1,10 +1,4 @@
-#include<iostream>
 #include<bits/stdc++.h> 
-#include <string>
-#include<stack>
-#include<vector>
-#define lli long long int
-
 using namespace std; 
 
 struct et 
@@ -18,8 +12,8 @@ bool isOperator(string c)
    	 if (c == "+" || c == "-" || 
             c == "*" || c == "/" || 
             c == "^") 
-       	 return true; 
-    	 return false; 
+       	 return 1; 
+    	 return 0; 
 } 
 et* newNode(string v) 
 { 
@@ -27,14 +21,15 @@ et* newNode(string v)
     temp->left = temp->right = NULL; 
     temp->value = v; 
     return temp; 
-}; 
-int precedance(char c) 
+}
+
+int precedance(string c) 
 { 
-    if(c == '^') 
+    if(c == "^") 
     return 3; 
-    else if(c == '*' || c == '/') 
+    else if(c == "*" || c == "/") 
     return 2; 
-    else if(c == '+' || c == '-') 
+    else if(c == "+" || c == "-") 
     return 1; 
     else
     return -1; 
@@ -74,9 +69,10 @@ vector <string> infixToPostfix(vector<string> str)
          
         
         else{
-		string extra= man.top();string extra2= str[i];
-            while(man.top() != "END" && precedance(extra2[0]) <= precedance(extra[0]))
+	
+            while(man.top() != "END" && precedance(str[i]) <= precedance(man.top()))
             {
+		    if(precedance(str[i])==3 && precedance(man.top())==3)break;
                 string s = man.top();
                 man.pop();
                 operation.push_back(s);
@@ -95,11 +91,11 @@ vector <string> infixToPostfix(vector<string> str)
      
     return operation;
 }
+
 int toInt(string s)  
 {  
-    int integer = 0;  
-      
-    integer=stoi(s);
+
+ int integer=stoi(s);
       
     return integer;  
 }  
@@ -115,7 +111,7 @@ et* constructTree(vector <string> postfix)
     { 
         
  
-        if (!isOperator(postfix[i])) 
+        if (isOperator(postfix[i])==0) 
         { 
             t = newNode(postfix[i]); 
             st.push(t); 
@@ -124,11 +120,7 @@ et* constructTree(vector <string> postfix)
 
         { 
             t = newNode(postfix[i]); 
-  
-           
-
- 
-            t1 = st.top(); 
+              t1 = st.top(); 
 
             st.pop();     
  
@@ -176,52 +168,60 @@ int eval(et* root)
   
     if (root->value=="*")  
         return l_val*r_val;  
-    if(root->value=="^"){
-    	return pow(l_val,r_val);
-    }
-  
-    return l_val/r_val;  
+    if(root->value=="/")
+	    return l_val/r_val;
+	if(root->value=="^")
+		return pow(l_val,r_val);
+	return -1;
 }  
 
-int main()
-{
-lli t;
-cin>>t;
-for(lli i=0; i<t; i++)
-{
-lli n;
-cin>>n;
-for(lli i=0; i<n;i++)
-{
-string str;
-cin>>str;
-vector <string> s;
-for(int i=0;i<str.length();i++){
-	if(str[i]=='('||str[i]==')'||str[i]=='*'||str[i]=='^'||str[i]=='-'||str[i]=='+'||str[i]=='/')
+int main(){
+	long long int t;
+	cin>>t;
+	while(t--)
 	{
-		string result;
-		result+=str[i];
-		s.push_back(result);
+	long long int n;
+		cin>>n;
+		while(n--)
+		{
+	int check=1;
+	string s;
+	cin>>s;
+	vector <string> v;
+	for(int i=0;i<s.length();i++){
+		if(s[i]=='('||s[i]==')'||s[i]=='*'||s[i]=='^'||s[i]=='-'||s[i]=='+'||s[i]=='/'){
+			string res;
+			res+=s[i];
+			v.push_back(res);
+		}
+		else{
+			string res;
+			while(s[i]!='('&&s[i]!=')'&&s[i]!='*'&&s[i]!='^'&&s[i]!='-'&&s[i]!='+'&&s[i]!='/'&&i<s.length()){
+				if(s[i]>='0'&&s[i]<='9'){
+				res+=s[i];
+				i++;
+			}
+			else{
+				check=0;
+				break;
+			}
+			}
+			i--;
+			v.push_back(res);
+		}
+		if(check==0)break;
+	}
+	if(check)
+	{
+	vector <string> o=infixToPostfix(v);
+	et*t = constructTree(o);
+	cout<<eval(t)<<endl;
 	}
 	else
 	{
-		string result;
-		while(str[i]!='(' && str[i]!=')' && str[i]!='*' && str[i]!='^' && str[i]!='-' && str[i]!='+' && str[i]!='/' && i<str.length())
-	{
-		result+=str[i];
-		i++;
-	}
-		i--;
-		s.push_back(result);
+	cout<<"NOT VALID"<<endl;
 	}
 	}
-
-vector <string> test_case=infixToPostfix(s);
-
-et* abc = constructTree(test_case);
-cout<<eval(abc)<<endl;
-}
-}
-return 0;
-
+	}
+	return 0;
 }
