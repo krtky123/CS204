@@ -1,260 +1,253 @@
-#include<bits/stdc++.h> 
-using namespace std; 
+#include<bits/stdc++.h>
 
-struct et 
-{ 
-    string value; 
-    et* left, *right; 
-}; 
+using namespace std;
 
-bool isOperator(string c) 
-{ 
-   	 if (c == "+" || c == "-" || 
-            c == "*" || c == "/" || 
-            c == "^") 
-       	 return 1; 
-    	 return 0; 
-} 
-et* newNode(string v) 
-{ 
-    et *temp = new et; 
-    temp->left = temp->right = NULL; 
-    temp->value = v; 
-    return temp; 
+vector<string> var;
+vector<string> val;
+vector<string> roman;
+bool assignmentPresent = false;
+
+int find1(vector<string> var, string s) {
+    int i;
+    for(i = 0; i < var.size(); ++i) {
+        if(var[i] == s) {
+            break;
+        }
+    }
+    return i;
 }
+void extractIVO(string str) { 
+    roman.clear();
+    stringstream ss;     
+    ss << str; 
+    char temp; 
+    string integer = ""; 
+    while (!ss.eof()) { 
+        ss >> temp; 
+        if(!ss.eof()) {
+            if (temp < 48 || temp > 57) {
+                if(integer != "") {
+                    roman.push_back(integer);
+                    integer = "";
+                }
+                string s(1,temp);
+                roman.push_back(s);
+            } else {
+                integer = integer + temp;
+            }
+        }
+    }
+    if(integer != "") {
+        roman.push_back(integer);
+    }
+} 
 
 int precedance(string c) 
 { 
-    if(c == "^") 
-    return 3; 
-    else if(c == "*" || c == "/") 
-    return 2; 
-    else if(c == "+" || c == "-") 
-    return 1; 
-    else
-    return -1; 
+    if(c == "#") {
+        return 4;
+    }else if(c == "^") {
+        return 3;
+    } else if(c == "*" || c == "/") {
+	    return 2; 
+    } else if(c == "+" || c == "-") {
+	    return 1; 
+    } else if(c == "=") {
+        return 0;
+    } else {
+	    return -1; 
+    }
 } 
 
-vector <string> infixToPostfix(vector <string> str)
-{
-    stack <string> man;
-    man.push("END");
-    vector <string> operation;
-    for(int i = 0; i < str.size(); i++)
-    {
-        
-        if(str[i]!="("&&str[i]!=")"&&str[i]!="*"&&str[i]!="^"&&str[i]!="-"&&str[i]!="+"&&str[i]!="/")
-        operation.push_back(str[i]);
- 
-        
-        else if(str[i] == "(")
-         
-        man.push("(");
-         
-
-        else if(str[i] == ")")
-        {
-            while(man.top() != "END"&& man.top() != "(")
-            {
-                string s = man.top();
-                man.pop();
-               operation.push_back(s);
-            }
-            if(man.top() == "(")
-            {
-                string s = man.top();
-                man.pop();  
-            }
-        }
-         
-        
-        else{
-	
-            while(man.top() != "END" && precedance(str[i]) <= precedance(man.top()))
-            {
-		    if(precedance(str[i])==3 && precedance(man.top())==3)break;
-                string s = man.top();
-                man.pop();
-                operation.push_back(s);
-            }
-            man.push(str[i]);
-        }
- 
-    }
-    
-    while(man.top() != "END")
-    {
-        string s = man.top();
-        man.pop();
-        operation.push_back(s);
-    }
-     
-    return operation;
-}
-
-int toInt(string s)  
-{  
-
- int integer=stoi(s);
-      
-    return integer;  
-}  
-
-et* constructTree(vector <string> postfix) 
+vector<string> infixtopostfix(vector<string> inFix) 
 { 
-    stack<et *> st; 
-    et *t, *t1, *t2; 
-  
-    
+	stack<string> st; 
+    vector<string> postFix;
+	st.push("["); 
+	int l = roman.size(); 
+	for(int i = 0; i < l; i++) { 
+		if(isalnum(inFix[i][0])) {
+		    postFix.push_back(inFix[i]);
+        } else if(inFix[i] == "(")  {
+		    st.push("("); 
+        } else if(inFix[i] == ")") { 
+			while(st.top() != "[" && st.top() != "(") { 
+				string c = st.top(); 
+				st.pop(); 
+			    postFix.push_back(c); 
+			} 
+			if(st.top() == "(") { 
+				st.pop(); 
+			} 
+		} else { 
+			while(st.top() != "[" && precedance(inFix[i]) <= precedance(st.top())) {
+                if(precedance(inFix[i]) == precedance(st.top()) && inFix[i] == "^") {
+                    break;
+                } else {
+                    string c = st.top(); 
+                    st.pop();
+                    postFix.push_back(c); 
+                }
+			} 
+			st.push(inFix[i]); 
+		} 
+	}
+	while(st.top() != "[") { 
+		string c = st.top(); 
+		st.pop(); 
+		postFix.push_back(c); 
+	}
 
-    for (int i=0; i<postfix.size(); i++) 
-    { 
-        
- 
-        if (isOperator(postfix[i])==0) 
-        { 
-            t = newNode(postfix[i]); 
-            st.push(t); 
-        } 
-        else 
-
-        { 
-            t = newNode(postfix[i]); 
-              t1 = st.top(); 
-
-            st.pop();     
- 
-            t2 = st.top(); 
-            st.pop(); 
-  
-            
-            t->right = t1; 
-            t->left = t2; 
-  
-            
-            st.push(t); 
-        } 
-    } 
-  
-     
-    t = st.top(); 
-    st.pop(); 
-  
-    return t; 
+    return postFix;
 } 
 
-int eval(et* root)  
-{  
-      
-    if (!root)  
-        return 0;  
-  
-     
-    if (!root->left && !root->right)  
-        return toInt(root->value);  
-  
-     
-    int l_val = eval(root->left);  
-  
-      
-    int r_val = eval(root->right);  
-  
-     
-    if (root->value=="+")  
-        return l_val+r_val;  
-  
-    if (root->value=="-")  
-        return l_val-r_val;  
-  
-    if (root->value=="*")  
-        return l_val*r_val;  
-    if(root->value=="/")
-	    return l_val/r_val;
-	if(root->value=="^")
-		return pow(l_val,r_val);
-	return -1;
-}  
+struct et {
+    string value;
+    bool isVariable;
+    et *left, *right;
+};
 
-int main(){
-   long long int t;
-   cin>>t;
-    while(t--){
-    	long long int n;
-    	cin>>n;
-    	while(n--){
-        int check=1;
-    string s;
-    cin>>s;
-    vector <string> v;
-    int c=0;
-    int close=0;
-    for(int i=0;i<s.length();i++){
-        if(s[i]=='('||s[i]==')'||s[i]=='*'||s[i]=='^'||s[i]=='-'||s[i]=='+'||s[i]=='/'){
-           
-            string res;
-            res+=s[i];
-            if(i==0&&s[i]=='-'){
-                close++;
-                v.push_back("(");
-                v.push_back("0");
-               
-            }
-           
-            if(i!=0&&(s[i]=='-'&&c==1)){
-                close++;
-                v.push_back("(");
-                v.push_back("0");
-            }
-           
-            if(s[i]!=')')c=1;
-            v.push_back(res);
+et* newNode(string value) {
+    et *temp = new et;
+    temp->value = value;
+    temp->right = temp->left = NULL;
+    if(isalpha(value[0])) {
+        temp->isVariable = true;
+        int present_pos = find1(var, value);
+        if(present_pos == var.size()) {
+            var.push_back(value);
+            val.push_back("");
         }
-        else if((s[i]>='a'&&s[i]<='z')||(s[i]>='A'&&s[i]<='Z')){
-            string res;
-            while((s[i]>='a'&&s[i]<='z')||(s[i]>='A'&&s[i]<='Z')&&i<s.length()){
-               
-                res+=s[i];
-                i++;
-            }
-            i--;
-            v.push_back(res);
-        }
-        else{
-            c=0;
-            string res;
-            while(s[i]>='0'&&s[i]<='9'&&i<s.length()){
-               
-                res+=s[i];
-                i++;
-            }
-            i--;
-            v.push_back(res);
-            while(close!=0){
-                v.push_back(")");
-                close--;
-            }
-        }
-       
+    } else {
+        temp->isVariable = false;
     }
-    while(close!=0){
-                v.push_back(")");
-                close--;
+    return temp;
+}
+
+et* make(vector<string> postFix) {
+    stack <et*> st;
+    et *t, *t_R, *t_L;
+
+    for(int i = 0; i < postFix.size(); ++i) {
+        if(isalnum(postFix[i][0])) {
+            t = newNode(postFix[i]);
+            st.push(t);
+        } else {
+            t = newNode(postFix[i]);
+            t_R = st.top();
+            st.pop();
+            if(postFix[i] != "#") {
+                t_L = st.top();
+                st.pop();
+            } else {
+                t_L = NULL;
             }
-   
-    if(check){
-    vector <string> abc=infixToPostfix(v);
-    et*t = constructTree(abc);
 
-	
-	cout<<eval(t)<<endl;
-}
-else{
-	cout<<"NOT VALID"<<endl;
-}
+            t->right = t_R;
+            t->left = t_L;
+            st.push(t);
+        }
+    }
+    t = st.top();
+    st.pop();
+
+    return t;
 }
 
-	
-	return 0;
-	
+string solve(et* t) {
+    if(t == NULL) {
+        return "0";
+    }
+    if(isalnum((t->value)[0])) {
+        if(t->isVariable) {
+            string s = t->value;
+            int i;
+            for(i = 0; i < var.size(); ++i) {
+                if(var[i] == s){
+                    break;
+                }
+            }
+            if(i < var.size()) {
+                return val[i];
+            } else {
+                return "";
+            }
+        }
+        return t->value;
+    } else {
+        if(t->value == "=") {
+            int present_pos = find1(var, t->left->value);
+            string b = solve(t->right);
+            if(b == "") {
+                return "";
+            }
+            val[present_pos] = b;
+            assignmentPresent = true;
+            return "";
+        }
+        string a = solve(t->left);
+        string b = solve(t->right);
+        if(a == "" || b == "") {
+            return "";
+        }
+        long long a_int = stoi(a);
+        long long b_int = stoi(b);
+        long long ans;
+        if(t->value == "+") {
+            ans = a_int + b_int;
+        } else if(t->value == "-") {
+            ans = a_int - b_int;
+        } else if(t->value == "*") {
+            ans = a_int * b_int;
+        } else if(t->value == "/") {
+            ans = a_int / b_int;
+        } else if(t->value == "#") {
+            ans = a_int - b_int;
+        } else if(t->value == "^") {
+            ans = pow(a_int, b_int);
+        }
+
+        return to_string(ans);
+    }
 }
+
+void printF(vector<string> v) {
+    for(int i = 0; i < v.size(); ++i) {
+        cout << v[i] << ' ';
+    }
+    cout << '\n';
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while(n--) {
+        var.clear();
+        val.clear();
+        int l;
+        cin >> l;
+        while(l--) {
+            assignmentPresent = false;
+            string input;
+            cin >> input;
+            input = '(' + input + ')';
+            for(int i = 1; i < input.size(); ++i) {
+                if(input[i] == '-' && !isalnum(input[i-1])) {
+                    input[i] = '#';
+                }
+            }
+            extractIVO(input);
+            vector<string> postFix = infixtopostfix(roman);
+            et *t = make(postFix);
+            string ans = solve(t);
+            if(ans == "") {
+                if(!assignmentPresent) {
+                    cout << "CAN'T BE EVALUATED\n";
+                }
+            } else {
+                cout << ans << '\n';
+            }
+        }
+    }
+    return 0;
 }
