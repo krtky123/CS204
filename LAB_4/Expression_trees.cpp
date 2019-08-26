@@ -35,9 +35,9 @@ int precedance(string c)
     return -1; 
 } 
 
-vector <string> infixToPostfix(vector<string> str)
+vector <string> infixToPostfix(vector <string> str)
 {
-    stack<string> man;
+    stack <string> man;
     man.push("END");
     vector <string> operation;
     for(int i = 0; i < str.size(); i++)
@@ -176,64 +176,74 @@ int eval(et* root)
 }  
 
 int main(){
-	unsigned long long int t;cin>>t;
-	while(t--){
-		long long int n;
-		cin>>n;
-		while(n--)
-		{
-		int check=1;
-	string s;
-	cin>>s;
-	vector <string> v;
-	bool op=0;
-	bool g=0;
-	for(int i=0;i<s.length();i++){
-		if(s[i]=='('||s[i]==')'||s[i]=='*'||s[i]=='^'||s[i]=='-'||s[i]=='+'||s[i]=='/'){
-		    
-			string result;
-			result+=s[i];
-			if(i==0&&s[i]=='-'){
-			    g=1;
-			    v.push_back("(");
-			    v.push_back("0");
-			    
-			}
-			if(i!=0&&(s[i]=='-'&&op==1)){
-			    g=1;
-			    v.push_back("(");
-			    v.push_back("0");
-			}
-			if(s[i]!=')')op=1;
-			v.push_back(result);
-		}
-		else{
-		    op=0;
-			string result;
-			while(s[i]!='('&&s[i]!=')'&&s[i]!='*'&&s[i]!='^'&&s[i]!='-'&&s[i]!='+'&&s[i]!='/'&&i<s.length()){
-				if(s[i]>='0'&&s[i]<='9'){
-				result+=s[i];
-				i++;
-			}
-			else{
-				check=0;
-				break;
-			}
-			}
-			i--;
-			v.push_back(result);
-			if(g==1){
-			    v.push_back(")");
-			    g=0;
-			}
-		}
-		if(check==0)break;
-	}
-	if(check){
-	
-	vector <string> abc=infixToPostfix(v);
-	
-	et*t = constructTree(abc);
+   long long int t;
+   cin>>t;
+    while(t--){
+    	long long int n;
+    	cin>>n;
+    	while(n--){
+        int check=1;
+    string s;
+    cin>>s;
+    vector <string> v;
+    int c=0;
+    int close=0;
+    for(int i=0;i<s.length();i++){
+        if(s[i]=='('||s[i]==')'||s[i]=='*'||s[i]=='^'||s[i]=='-'||s[i]=='+'||s[i]=='/'){
+           
+            string res;
+            res+=s[i];
+            if(i==0&&s[i]=='-'){
+                close++;
+                v.push_back("(");
+                v.push_back("0");
+               
+            }
+           
+            if(i!=0&&(s[i]=='-'&&c==1)){
+                close++;
+                v.push_back("(");
+                v.push_back("0");
+            }
+           
+            if(s[i]!=')')c=1;
+            v.push_back(res);
+        }
+        else if((s[i]>='a'&&s[i]<='z')||(s[i]>='A'&&s[i]<='Z')){
+            string res;
+            while((s[i]>='a'&&s[i]<='z')||(s[i]>='A'&&s[i]<='Z')&&i<s.length()){
+               
+                res+=s[i];
+                i++;
+            }
+            i--;
+            v.push_back(res);
+        }
+        else{
+            c=0;
+            string res;
+            while(s[i]>='0'&&s[i]<='9'&&i<s.length()){
+               
+                res+=s[i];
+                i++;
+            }
+            i--;
+            v.push_back(res);
+            while(close!=0){
+                v.push_back(")");
+                close--;
+            }
+        }
+       
+    }
+    while(close!=0){
+                v.push_back(")");
+                close--;
+            }
+   
+    if(check){
+    vector <string> abc=infixToPostfix(v);
+    et*t = constructTree(abc);
 
 	
 	cout<<eval(t)<<endl;
@@ -242,9 +252,9 @@ else{
 	cout<<"NOT VALID"<<endl;
 }
 }
-	}
+
 	
 	return 0;
 	
-
+}
 }
