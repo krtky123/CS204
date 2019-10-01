@@ -100,8 +100,8 @@ void convexHull(Dot Dots[], int n)
          S.pop(); 
       S.push(Dots[i]); 
    } 
- 
-   while (!S.empty()) 
+ cout<<"("<<p0.x<<", "<<p0.y<<")"<<endl;
+   while (S.size()!=1) 
    { 
        Dot p = S.top(); 
        cout << "(" << p.x << ", " << p.y <<")" << endl; 
