@@ -1,65 +1,75 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long int ll;
-#define pb push_back
-const int N=1e6+5;
-long long int mod = (ll)1e9+7;
-ll parent[N],size[N];
-void make(ll v)
+#define M 1000000007
+#define ll long long
+#define ld long double
+#define vi vector<int>
+#define vll vector<ll>
+#define pii pair<int, int>
+#define PB push_back
+#define io ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+ll v, e;
+vll id, nodes, edges;
+vector<pair<ld, pair<ll, ll> > >points;
+
+ll find(ll x)
 {
-    parent[v] = v;
-    size[v] = 1;
+    while(id[x] != x)
+    {
+        id[x] = id[id[x]];
+        x = id[x];
+    }
+    return x;
 }
 
-ll find(ll v)
+void uni(ll x, ll y)
 {
-    if (v == parent[v])
-        return v;
-    return parent[v] = find(parent[v]);
+    ll p = find(x);
+    ll q = find(y);
+    id[p] = id[q];
 }
 
-void union(ll a, ll b)
+ll Max_Spamming_Tree(vector<pair<ld, pair<ll, ll> > >p)
 {
-    a = find(a);
-    b = find(b);
-    if (a != b)
+    ll x, y, cost, maxcost = 1;
+    for(ll i = 0;i < e;++i)
     {
-        if (size[a] < size[b])
-            swap(a, b);
-        parent[b] = a;
-        size[a] += size[b];
+        x = p[i].second.first;
+        y = p[i].second.second;
+        cost = p[i].first;
+        if(find(x) != find(y))
+        {
+            maxcost *= cost;
+            uni(x, y);
+        }    
+        maxcost = maxcost%M;
     }
+    return maxcost;
 }
-struct edge
+
+bool compare(pair<ll,pair<ll,ll>> a,pair<ll,pair<ll,ll>> b)
 {
-    ll u, v, w;
-    bool operator<(edge const &other)
-    {
-        return w > other.w;
-    }
-};
+	return a.first>b.first;
+}
+
 int main()
 {
-    ll n,m,u,v,w;
-    cin>>n>>m;
-    for(int i=1;i<=n;i++)make(i);
-    vector<edge> edges,vk;
-    for(int i=0;i< m; i++)
-    {
-        cin>>u>>v>>w;
-        edges.pb({u,v,w});
-    }
-    ll cost = 1;
-    sort(edges.begin(), edges.end());
-    for (edge e : edges)
-    {
-        if (find(e.u) != find(e.v))
-        {
-            cost =(cost*(e.w%mod))%mod;
-            vk.pb(e);
-            union(e.u, e.v);
-        }
-    }
-    cout<<cost;
-    return 0;
+	ll x, y, w, maxcost;
+	cin>>v>>e;
+    id.resize(v);
+    nodes.resize(v);
+    edges.resize(e);
+    points.resize(e);
+	for(ll i = 0;i < v;++i) id[i] = i;
+
+	for(ll l = 0; l<e; ++l)
+	{
+		cin >> x >> y >> w;
+		points[l] = make_pair(w, make_pair(x,y));
+	}
+	sort(points.begin(), points.end(), compare);
+	maxcost = Max_Spamming_Tree(points);
+	cout << maxcost << endl;
+	return 0;
 }
